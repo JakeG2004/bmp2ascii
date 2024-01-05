@@ -1,9 +1,16 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 using namespace std;
 
-unsigned char* readBMP(char* filename, int &width, int &height){
+struct pixel{
+    int r;
+    int g;
+    int b;
+};
+
+void readBMP(char* filename, vector<vector<pixel>> &pixels, int &height, int &width){
 
     //open file
     FILE* f = fopen(filename, "rb");
@@ -16,22 +23,22 @@ unsigned char* readBMP(char* filename, int &width, int &height){
     width = *(int*)&info[18];
     height = *(int*)&info[22];
 
-    //allocate 3 bytes per pixel
-    int size = 3 * width * height;
-    unsigned char* data = new unsigned char[size];
+    //change vector size
+    pixels.resize(height, vector<pixel>(width));
 
-    //read the rest of the data at once
-    fread(data, sizeof(unsigned char), size, f);
-    fclose(f);
-
-    //flip the order of every 3 bytes
-    for(int i = 0; i < size; i++){
-        unsigned char tmp = data[i];
-        data[i] = data[i+2];
-        data[i+2] = tmp;
+    //read data into 2d vector
+    for(int i = 0; i < height; i++){
+        for(int j = 0; j < width; j++){
+            cout << "reading" << endl;
+            fread(&(pixels[i][j].r), sizeof(unsigned char), 1, f);
+            fread(&(pixels[i][j].g), sizeof(unsigned char), 1, f);
+            fread(&(pixels[i][j].b), sizeof(unsigned char), 1, f);
+        }
     }
 
-    return data;
+    //close the file
+    fclose(f);
+
 }
 
 int main(int argc, char* argv[]){
@@ -44,7 +51,15 @@ int main(int argc, char* argv[]){
     int height;
     int width;
 
-    unsigned char* data = readBMP(argv[1], width, height);
+    vector<vector<pixel>> pixels;
 
-    cout << "Width: " << width << "\nHeight: " << height << endl;
+    //get data
+    readBMP(argv[1], pixels, height, width);
+
+    for(int i = 0; i < height; i++){
+        for(int j = 0; j < width; j++){
+            cout << pixels[i][j].r << endl;
+        }
+    }
+
 }
