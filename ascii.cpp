@@ -23,22 +23,23 @@ void readBMP(char* filename, vector<vector<pixel>> &pixels, int &height, int &wi
     width = *(int*)&info[18];
     height = *(int*)&info[22];
 
-    //ChatGPT magic idk how this works
-    int rowSize = (3 * width) + (4 - (3 * width) % 4);
+    //Determine size of row with buffer (BMP rows must be multiple of 4)
+    int rowSize = (3 * width) + (4 - (3 * width) % 4) % 4;
 
     //change vector size
     pixels.resize(height, vector<pixel>(width));
 
     //read data into 2d vector
     for(int i = height -1; i >= 0; i--){
+        //move pointer to start of row
+        fseek(f, 54 + i * rowSize, SEEK_SET);
+
         //write
         for(int j = 0; j < width; j++){
             fread(&(pixels[i][j].b), sizeof(unsigned char), 1, f);
             fread(&(pixels[i][j].g), sizeof(unsigned char), 1, f);
             fread(&(pixels[i][j].r), sizeof(unsigned char), 1, f);
         }
-        //move pointer to start of row
-        fseek(f, 54 + i * rowSize, SEEK_SET);
     }
 
     //close the file
@@ -63,11 +64,51 @@ int main(int argc, char* argv[]){
 
     printf("Height: %i\nWidth: %i\n", height, width);
 
-    //print out pixel values
-    for(int i = 0; i < height; i++){
-        for(int j = 0; j < width; j++){
-            printf("%i, %i, %i\n", pixels[i][j].r, pixels[i][j].g, pixels[i][j].b);
-        }
-    }
+    int avg;
 
-}
+    //print out pixel values
+    for(int i = height - 1; i >= 0; i--){
+        for(int j = 0; j < width; j++){
+            //printf("%i, %i, %i\n", pixels[i][j].r, pixels[i][j].g, pixels[i][j].b); //rgb values for each pixel
+            //calculate avg color for each pixel
+            avg = (pixels[i][j].r + pixels[i][j].g + pixels[i][j].b)/75; //div by 3 then by 25 to get rounding to 25s
+            //cout << avg << " ";
+            switch(avg){
+                case 0:
+                    cout << " ";
+                    break;
+                case 1:
+                    cout << ".";
+                    break;
+                case 2:
+                    cout << ",";
+                    break;
+                case 3:
+                    cout << "-";
+                    break;
+                case 4:
+                    cout << "~";
+                    break;
+                case 5:
+                    cout << "+";
+                    break;
+                case 6:
+                    cout << "=";
+                    break;
+                case 7:
+                    cout << "#";
+                    break;
+                case 8:
+                    cout << "&";
+                    break;
+                case 9:
+                    cout << "$";
+                    break;
+                case 10:
+                    cout << "%";
+                    break;
+            }
+            cout << " ";
+        }
+        cout << endl;
+    }
