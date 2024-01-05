@@ -69,14 +69,16 @@ int main(int argc, char* argv[]){
     int avg;
 
     ofstream outfile("output.txt");
+    vector<char> asciiChars = {' ', '.', ',', ':', ';', '+', '=', '*', '%', '#', '@', '$', '&', '8', '0', 'O', 'X', 'M', 'W'};
 
     //print out pixel values
     for(int i = height - 1; i >= 0; i--){
         for(int j = 0; j < width; j++){
             //calculate avg color for each pixel
-            avg = (pixels[i][j].r + pixels[i][j].g + pixels[i][j].b)/75; //div by 3 then by 25 to get rounding to 25s
+            avg = (pixels[i][j].r + pixels[i][j].g + pixels[i][j].b)/(3*asciiChars.size()-1); //div by 3 then by num of elements
 
-            switch(avg){
+            outfile << asciiChars[avg];
+            /*switch(avg){
                 case 0:
                     outfile << " ";
                     break;
@@ -110,7 +112,7 @@ int main(int argc, char* argv[]){
                 case 10:
                     outfile << "%";
                     break;
-            }
+            }*/
             outfile << " ";
         }
         outfile << "\n";
