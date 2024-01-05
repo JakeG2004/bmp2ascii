@@ -77,53 +77,14 @@ int main(int argc, char* argv[]){
     for(int i = height - 1; i >= 0; i--){
         for(int j = 0; j < width; j++){
             //calculate avg color for each pixel
-            //avg = (pixels[i][j].r + pixels[i][j].g + pixels[i][j].b)/(3*asciiChars.size()-1); //div by 3 then by num of elements
 
             avg = (pixels[i][j].r + pixels[i][j].g + pixels[i][j].b)/(3 * (255 / asciiChars.size())); //div by 3 then by 25 to get rounding to 25s
             clamp(avg, 0, asciiChars.size() - 1);
-            cout << avg << " ";
             outfile << asciiChars[avg];
-
-            /*switch(avg){
-                case 0:
-                    outfile << " ";
-                    break;
-                case 1:
-                    outfile << ".";
-                    break;
-                case 2:
-                    outfile << ",";
-                    break;
-                case 3:
-                    outfile << "-";
-                    break;
-                case 4:
-                    outfile << "~";
-                    break;
-                case 5:
-                    outfile << "+";
-                    break;
-                case 6:
-                    outfile << "=";
-                    break;
-                case 7:
-                    outfile << "#";
-                    break;
-                case 8:
-                    outfile << "&";
-                    break;
-                case 9:
-                    outfile << "$";
-                    break;
-                case 10:
-                    outfile << "%";
-                    break;
-            }*/
  
             outfile << " ";
         }
         outfile << "\n";
-        cout << endl;
     }
     outfile.close();
     cout << "Done!" << endl;
