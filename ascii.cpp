@@ -78,41 +78,7 @@ int main(int argc, char* argv[]){
             avg = (pixels[i][j].r + pixels[i][j].g + pixels[i][j].b)/(3*asciiChars.size()-1); //div by 3 then by num of elements
 
             outfile << asciiChars[avg];
-            /*switch(avg){
-                case 0:
-                    outfile << " ";
-                    break;
-                case 1:
-                    outfile << ".";
-                    break;
-                case 2:
-                    outfile << ",";
-                    break;
-                case 3:
-                    outfile << "-";
-                    break;
-                case 4:
-                    outfile << "~";
-                    break;
-                case 5:
-                    outfile << "+";
-                    break;
-                case 6:
-                    outfile << "=";
-                    break;
-                case 7:
-                    outfile << "#";
-                    break;
-                case 8:
-                    outfile << "&";
-                    break;
-                case 9:
-                    outfile << "$";
-                    break;
-                case 10:
-                    outfile << "%";
-                    break;
-            }*/
+ 
             outfile << " ";
         }
         outfile << "\n";
