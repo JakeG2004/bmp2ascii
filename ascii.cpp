@@ -23,17 +23,22 @@ void readBMP(char* filename, vector<vector<pixel>> &pixels, int &height, int &wi
     width = *(int*)&info[18];
     height = *(int*)&info[22];
 
+    //ChatGPT magic idk how this works
+    int rowSize = (3 * width) & (~3);
+
     //change vector size
     pixels.resize(height, vector<pixel>(width));
 
     //read data into 2d vector
-    for(int i = 0; i < height; i++){
+    for(int i = height -1; i >= 0; i--){
+        //write
         for(int j = 0; j < width; j++){
-            cout << "reading" << endl;
-            fread(&(pixels[i][j].r), sizeof(unsigned char), 1, f);
-            fread(&(pixels[i][j].g), sizeof(unsigned char), 1, f);
             fread(&(pixels[i][j].b), sizeof(unsigned char), 1, f);
+            fread(&(pixels[i][j].g), sizeof(unsigned char), 1, f);
+            fread(&(pixels[i][j].r), sizeof(unsigned char), 1, f);
         }
+        //move pointer to start of row
+        fseek(f, 54 + i * rowSize, SEEK_SET);
     }
 
     //close the file
@@ -56,9 +61,12 @@ int main(int argc, char* argv[]){
     //get data
     readBMP(argv[1], pixels, height, width);
 
+    printf("Height: %i\nWidth: %i\n", height, width);
+
+    //print out pixel values
     for(int i = 0; i < height; i++){
         for(int j = 0; j < width; j++){
-            cout << pixels[i][j].r << endl;
+            printf("%i, %i, %i\n", pixels[i][j].r, pixels[i][j].g, pixels[i][j].b);
         }
     }
 
