@@ -24,7 +24,7 @@ void readBMP(char* filename, vector<vector<pixel>> &pixels, int &height, int &wi
     height = *(int*)&info[22];
 
     //ChatGPT magic idk how this works
-    int rowSize = (3 * width) & (~3);
+    int rowSize = (3 * width) + (4 - (3 * width) % 4);
 
     //change vector size
     pixels.resize(height, vector<pixel>(width));
