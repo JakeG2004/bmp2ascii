@@ -10,6 +10,8 @@ struct pixel{
     int b;
 };
 
+void clamp(int&, int, int);
+
 void readBMP(char* filename, vector<vector<pixel>> &pixels, int &height, int &width){
 
     //open file
@@ -69,7 +71,7 @@ int main(int argc, char* argv[]){
     int avg;
 
     ofstream outfile("output.txt");
-    vector<char> asciiChars = {' ', '.', ',', ':', ';', '+', '=', '*', '%', '#', '@', '$', '&', '8', '0', 'O', 'X', 'M', 'W'};
+    vector<char> asciiChars = {' ', '.', ',', '-', '~', ':', ';', '+', '=', '#', '&', '$', '%', '$', '&', '8', '0', '@', 'M', 'W', (char)128}; //(char)128 overloads the ascii character values and gives a VERY filled in error character lmao
 
     //print out pixel values
     for(int i = height - 1; i >= 0; i--){
@@ -77,10 +79,12 @@ int main(int argc, char* argv[]){
             //calculate avg color for each pixel
             //avg = (pixels[i][j].r + pixels[i][j].g + pixels[i][j].b)/(3*asciiChars.size()-1); //div by 3 then by num of elements
 
-            //outfile << asciiChars[avg];
-            avg = (pixels[i][j].r + pixels[i][j].g + pixels[i][j].b)/75; //div by 3 then by 25 to get rounding to 25s
+            avg = (pixels[i][j].r + pixels[i][j].g + pixels[i][j].b)/(3 * (255 / asciiChars.size())); //div by 3 then by 25 to get rounding to 25s
+            clamp(avg, 0, asciiChars.size() - 1);
+            cout << avg << " ";
+            outfile << asciiChars[avg];
 
-            switch(avg){
+            /*switch(avg){
                 case 0:
                     outfile << " ";
                     break;
@@ -114,13 +118,21 @@ int main(int argc, char* argv[]){
                 case 10:
                     outfile << "%";
                     break;
-            }
+            }*/
  
             outfile << " ";
         }
         outfile << "\n";
+        cout << endl;
     }
     outfile.close();
     cout << "Done!" << endl;
     return 0;
+}
+
+void clamp(int &v, int min, int max){
+    if(v > max)
+        v = max;
+    if(v < min)
+        v = min;
 }
