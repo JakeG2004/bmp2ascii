@@ -14,6 +14,10 @@ void readBMP(char* filename, vector<vector<pixel>> &pixels, int &height, int &wi
 
     //open file
     FILE* f = fopen(filename, "rb");
+    if(!f){
+        cout << "Invalid file." << endl;
+        exit(1);
+    }
     unsigned char info[54];
 
     //Read the 54-byte header
@@ -62,53 +66,56 @@ int main(int argc, char* argv[]){
     //get data
     readBMP(argv[1], pixels, height, width);
 
-    printf("Height: %i\nWidth: %i\n", height, width);
-
     int avg;
+
+    ofstream outfile("output.txt");
 
     //print out pixel values
     for(int i = height - 1; i >= 0; i--){
         for(int j = 0; j < width; j++){
-            //printf("%i, %i, %i\n", pixels[i][j].r, pixels[i][j].g, pixels[i][j].b); //rgb values for each pixel
             //calculate avg color for each pixel
             avg = (pixels[i][j].r + pixels[i][j].g + pixels[i][j].b)/75; //div by 3 then by 25 to get rounding to 25s
-            //cout << avg << " ";
+
             switch(avg){
                 case 0:
-                    cout << " ";
+                    outfile << " ";
                     break;
                 case 1:
-                    cout << ".";
+                    outfile << ".";
                     break;
                 case 2:
-                    cout << ",";
+                    outfile << ",";
                     break;
                 case 3:
-                    cout << "-";
+                    outfile << "-";
                     break;
                 case 4:
-                    cout << "~";
+                    outfile << "~";
                     break;
                 case 5:
-                    cout << "+";
+                    outfile << "+";
                     break;
                 case 6:
-                    cout << "=";
+                    outfile << "=";
                     break;
                 case 7:
-                    cout << "#";
+                    outfile << "#";
                     break;
                 case 8:
-                    cout << "&";
+                    outfile << "&";
                     break;
                 case 9:
-                    cout << "$";
+                    outfile << "$";
                     break;
                 case 10:
-                    cout << "%";
+                    outfile << "%";
                     break;
             }
-            cout << " ";
+            outfile << " ";
         }
-        cout << endl;
+        outfile << "\n";
     }
+    outfile.close();
+    cout << "Done!" << endl;
+    return 0;
+}
